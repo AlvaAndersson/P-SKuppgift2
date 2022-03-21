@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System;
 
 namespace PÅSKuppgift
 {
@@ -12,14 +13,30 @@ namespace PÅSKuppgift
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        //Alien
         Texture2D shipGreen_mannedBild;
         List<Rectangle> shipGreen_mannedPositioner = new List<Rectangle>();
         //float shipGreen_mannedSpeed = 3;
         Rectangle shipGreen_mannedRect;
 
+        //Rymdskepp
         Texture2D character_0015Bild;
         Rectangle character_0015Rect;
         KeyboardState tangentBord = Keyboard.GetState();
+
+        //Laser
+        Texture2D laserBild;
+        Rectangle laserHitbox;
+        Vector2 laserHastighet;
+        Vector2 laserPosition = new Vector2(); 
+
+        Texture2D buttonBild;
+        Rectangle buttonRect;
+
+        //Start text
+        string start = "Space invaders";
+        Vector2 startPosition;
+        SpriteFont arial;
 
         public Game1()
         {
@@ -42,17 +59,34 @@ namespace PÅSKuppgift
                 }
             }
 
+
+
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+           //Aliens översta raden
             spriteBatch = new SpriteBatch(GraphicsDevice);
             shipGreen_mannedBild = Content.Load<Texture2D>("shipGreen_manned");
             shipGreen_mannedRect = new Rectangle(65, 50, shipGreen_mannedBild.Width / 2, shipGreen_mannedBild.Height / 2);
 
+            //Rymdskepp
             character_0015Bild = Content.Load<Texture2D>("character_0015");
             character_0015Rect = new Rectangle(350, 420, 50, 50);
+
+            //Laser
+            laserBild = Content.Load<Texture2D>("spaceMissiles_038");
+            laserHitbox = new Rectangle(0, 0, laserBild.Width, laserBild.Height);
+            
+
+            //Startknapp
+            buttonBild = Content.Load<Texture2D>("button");
+            buttonRect = new Rectangle(400 - buttonBild.Width / 2, 360, buttonBild.Width, buttonBild.Height);
+
+            //StartText
+           // startPosition = new Vector2(400 - arial.MeasureString(start).X / 2, 100);
+            
 
             // TODO: use this.Content to load your game content here
         }
@@ -65,6 +99,10 @@ namespace PÅSKuppgift
             // TODO: Add your update logic here
 
             base.Update(gameTime);
+
+            laserPosition = new Vector2(character_0015Rect.X, character_0015Rect.Y);
+
+            laserPosition.Y += 1;
 
             tangentBord = Keyboard.GetState();
 
@@ -83,6 +121,8 @@ namespace PÅSKuppgift
             }
 
             spriteBatch.Draw(character_0015Bild, character_0015Rect, Color.White);
+
+            spriteBatch.Draw(laserBild, laserPosition, Color.White);
             
             spriteBatch.End();
 
@@ -102,6 +142,21 @@ namespace PÅSKuppgift
             }
         }
 
+        void startMeny()
+        {
+            GraphicsDevice.Clear(Color.AliceBlue);
+
+            spriteBatch.Begin();
+            spriteBatch.DrawString(arial, start, startPosition, Color.White);
+            spriteBatch.Draw(buttonBild, buttonRect, Color.White);
+            spriteBatch.End();
+        }
+
+        void UppdateraMeny()
+        {
+            // if(Vänster musknapp precistryckt && muspekare över buttonbilden)
+            // Byt scen till spelscen
+        }
        
     }
 }

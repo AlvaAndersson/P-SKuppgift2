@@ -19,6 +19,12 @@ namespace PÅSKuppgift
         //float shipGreen_mannedSpeed = 3;
         Rectangle shipGreen_mannedRect;
 
+        //Alien2
+        Texture2D alien2Bild;
+        List<Rectangle> alien2Positioner = new List<Rectangle>();
+        //float shipGreen_mannedSpeed = 3;
+        Rectangle alien2Rect;
+
         //Rymdskepp
         Texture2D character_0015Bild;
         Rectangle character_0015Rect;
@@ -51,15 +57,21 @@ namespace PÅSKuppgift
         {
             // TODO: Add your initialization logic here
 
-            for (int x = 0; x < 6; x++)
+            for (int x = 0; x < 7; x++)
             {
                 for (int y = 0; y < 1; y++)
                 {
-                    shipGreen_mannedPositioner.Add(new Rectangle(60 + 115 * x, 50 + 120 * y, 80, 80));
+                    shipGreen_mannedPositioner.Add(new Rectangle(65 + 100 * x, 50 + 120 * y, 50, 50));
                 }
             }
 
-
+            for (int x = 0; x < 7; x++)
+            {
+                for (int y = 0; y < 1; y++)
+                {
+                    alien2Positioner.Add(new Rectangle(65 + 100 * x, 120 + 120 * y, 50, 50));
+                }
+            }
 
             base.Initialize();
         }
@@ -68,8 +80,12 @@ namespace PÅSKuppgift
         {
            //Aliens översta raden
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            shipGreen_mannedBild = Content.Load<Texture2D>("shipGreen_manned");
-            shipGreen_mannedRect = new Rectangle(65, 50, shipGreen_mannedBild.Width / 2, shipGreen_mannedBild.Height / 2);
+            shipGreen_mannedBild = Content.Load<Texture2D>("character_0001");
+            shipGreen_mannedRect = new Rectangle(65, 50, 50, 50);
+
+            //Alien2
+            alien2Bild = Content.Load<Texture2D>("character_0005");
+            alien2Rect = new Rectangle(65, 50, 50, 50);
 
             //Rymdskepp
             character_0015Bild = Content.Load<Texture2D>("character_0015");
@@ -77,8 +93,8 @@ namespace PÅSKuppgift
 
             //Laser
             laserBild = Content.Load<Texture2D>("spaceMissiles_038");
-            laserHitbox = new Rectangle(0, 0, laserBild.Width, laserBild.Height);
-            
+            laserHitbox = new Rectangle(character_0015Rect.X + 17, character_0015Rect.Y, laserBild.Width, laserBild.Height);
+            laserPosition = new Vector2(character_0015Rect.X + 17, character_0015Rect.Y);
 
             //Startknapp
             buttonBild = Content.Load<Texture2D>("button");
@@ -100,9 +116,16 @@ namespace PÅSKuppgift
 
             base.Update(gameTime);
 
-            laserPosition = new Vector2(character_0015Rect.X, character_0015Rect.Y);
 
-            laserPosition.Y += 1;
+            if (laserPosition.Y != 0)
+            {
+                laserPosition.Y -= 4; 
+            }
+            if (laserPosition.Y == 0)
+            {
+                laserPosition = new Vector2(character_0015Rect.X + 17, character_0015Rect.Y);
+            }
+            
 
             tangentBord = Keyboard.GetState();
 
@@ -120,9 +143,17 @@ namespace PÅSKuppgift
                 
             }
 
-            spriteBatch.Draw(character_0015Bild, character_0015Rect, Color.White);
+            foreach (Rectangle alien2Position in alien2Positioner)
+            {
+                spriteBatch.Draw(alien2Bild, alien2Position, Color.White);
+
+            }
 
             spriteBatch.Draw(laserBild, laserPosition, Color.White);
+
+            spriteBatch.Draw(character_0015Bild, character_0015Rect, Color.White);
+
+           
             
             spriteBatch.End();
 
@@ -156,6 +187,14 @@ namespace PÅSKuppgift
         {
             // if(Vänster musknapp precistryckt && muspekare över buttonbilden)
             // Byt scen till spelscen
+        }
+
+        void alienBort()
+        {
+            for (int i = 0; i < shipGreen_mannedPositioner.count; i++)
+            {
+
+            }
         }
        
     }

@@ -94,7 +94,7 @@ namespace PÅSKuppgift
             //Laser
             laserBild = Content.Load<Texture2D>("spaceMissiles_038");
             laserHitbox = new Rectangle(character_0015Rect.X + 17, character_0015Rect.Y, laserBild.Width, laserBild.Height);
-            laserPosition = new Vector2(character_0015Rect.X + 17, character_0015Rect.Y);
+            //laserPosition = new Vector2(character_0015Rect.X + 17, character_0015Rect.Y);
 
             //Startknapp
             buttonBild = Content.Load<Texture2D>("button");
@@ -116,15 +116,23 @@ namespace PÅSKuppgift
 
             base.Update(gameTime);
 
+            alienBort();
 
-            if (laserPosition.Y != 0)
+            
+
+
+
+            if (laserHitbox.Y != 0)
             {
-                laserPosition.Y -= 4; 
+                laserHitbox.Y -= 4; 
             }
-            if (laserPosition.Y == 0)
+            if (laserHitbox.Y == 0)
             {
-                laserPosition = new Vector2(character_0015Rect.X + 17, character_0015Rect.Y);
+                laserHitbox.Y = character_0015Rect.Y;
+                laserHitbox.X = character_0015Rect.X;
             }
+
+            
             
 
             tangentBord = Keyboard.GetState();
@@ -149,11 +157,11 @@ namespace PÅSKuppgift
 
             }
 
-            spriteBatch.Draw(laserBild, laserPosition, Color.White);
+            spriteBatch.Draw(laserBild, laserHitbox, Color.White);
 
             spriteBatch.Draw(character_0015Bild, character_0015Rect, Color.White);
 
-           
+            
             
             spriteBatch.End();
 
@@ -166,10 +174,12 @@ namespace PÅSKuppgift
             if (tangentBord.IsKeyDown(Keys.Right) == true)
             {
                 character_0015Rect.X += 4;
+                
             }
             if (tangentBord.IsKeyDown(Keys.Left) == true)
             {
                 character_0015Rect.X -= 4;
+                
             }
         }
 
@@ -189,13 +199,20 @@ namespace PÅSKuppgift
             // Byt scen till spelscen
         }
 
+        
         void alienBort()
         {
-            for (int i = 0; i < shipGreen_mannedPositioner.count; i++)
+            for (int i = 0; i < shipGreen_mannedPositioner.Count; i++)
             {
-
+                Rectangle tempshipGreen_mannedPositioner = shipGreen_mannedPositioner[i];
+                
+                if (laserHitbox.Intersects(tempshipGreen_mannedPositioner))
+                {
+                    shipGreen_mannedPositioner.Remove(tempshipGreen_mannedPositioner);
+                }
+               
             }
         }
-       
+        
     }
 }

@@ -16,7 +16,7 @@ namespace PÅSKuppgift
         //Alien
         Texture2D shipGreen_mannedBild;
         List<Rectangle> shipGreen_mannedPositioner = new List<Rectangle>();
-        //float shipGreen_mannedSpeed = 3;
+        List<Vector2> shipGreen_mannedSpeed = new List<Vector2>();
         Rectangle shipGreen_mannedRect;
 
         //Alien2
@@ -24,6 +24,12 @@ namespace PÅSKuppgift
         List<Rectangle> alien2Positioner = new List<Rectangle>();
         //float shipGreen_mannedSpeed = 3;
         Rectangle alien2Rect;
+
+        //Alien3
+        Texture2D alien3Bild;
+        List<Rectangle> alien3Positioner = new List<Rectangle>();
+        //float shipGreen_mannedSpeed = 3;
+        Rectangle alien3Rect;
 
         //Rymdskepp
         Texture2D character_0015Bild;
@@ -33,8 +39,8 @@ namespace PÅSKuppgift
         //Laser
         Texture2D laserBild;
         Rectangle laserHitbox;
-        Vector2 laserHastighet;
-        Vector2 laserPosition = new Vector2(); 
+        //Vector2 laserHastighet;
+        //Vector2 laserPosition = new Vector2(); 
 
         Texture2D buttonBild;
         Rectangle buttonRect;
@@ -62,6 +68,7 @@ namespace PÅSKuppgift
                 for (int y = 0; y < 1; y++)
                 {
                     shipGreen_mannedPositioner.Add(new Rectangle(65 + 100 * x, 50 + 120 * y, 50, 50));
+                    shipGreen_mannedSpeed.Add(new Vector2(3 * x, 3 * y));
                 }
             }
 
@@ -70,6 +77,14 @@ namespace PÅSKuppgift
                 for (int y = 0; y < 1; y++)
                 {
                     alien2Positioner.Add(new Rectangle(65 + 100 * x, 120 + 120 * y, 50, 50));
+                }
+            }
+
+            for (int x = 0; x < 7; x++)
+            {
+                for (int y = 0; y < 1; y++)
+                {
+                    alien3Positioner.Add(new Rectangle(65 + 100 * x, 190 + 120 * y, 50, 50));
                 }
             }
 
@@ -86,6 +101,10 @@ namespace PÅSKuppgift
             //Alien2
             alien2Bild = Content.Load<Texture2D>("character_0005");
             alien2Rect = new Rectangle(65, 50, 50, 50);
+
+            //Alien3
+            alien3Bild = Content.Load<Texture2D>("character_0003");
+            alien3Rect = new Rectangle(65, 50, 50, 50);
 
             //Rymdskepp
             character_0015Bild = Content.Load<Texture2D>("character_0015");
@@ -124,12 +143,12 @@ namespace PÅSKuppgift
 
             if (laserHitbox.Y != 0)
             {
-                laserHitbox.Y -= 4; 
+                laserHitbox.Y -= 6; 
             }
             if (laserHitbox.Y == 0)
             {
                 laserHitbox.Y = character_0015Rect.Y;
-                laserHitbox.X = character_0015Rect.X;
+                laserHitbox.X = character_0015Rect.X + 17;
             }
 
             
@@ -154,6 +173,12 @@ namespace PÅSKuppgift
             foreach (Rectangle alien2Position in alien2Positioner)
             {
                 spriteBatch.Draw(alien2Bild, alien2Position, Color.White);
+
+            }
+
+            foreach (Rectangle alien3Position in alien3Positioner)
+            {
+                spriteBatch.Draw(alien3Bild, alien3Position, Color.White);
 
             }
 
@@ -209,8 +234,64 @@ namespace PÅSKuppgift
                 if (laserHitbox.Intersects(tempshipGreen_mannedPositioner))
                 {
                     shipGreen_mannedPositioner.Remove(tempshipGreen_mannedPositioner);
+
+                    laserHitbox.Y = character_0015Rect.Y;
+                    laserHitbox.X = character_0015Rect.X + 17;
                 }
                
+            }
+
+            for (int i = 0; i < alien2Positioner.Count; i++)
+            {
+                Rectangle tempalien2Positioner = alien2Positioner[i];
+
+                if (laserHitbox.Intersects(tempalien2Positioner))
+                {
+                    alien2Positioner.Remove(tempalien2Positioner);
+
+                    laserHitbox.Y = character_0015Rect.Y;
+                    laserHitbox.X = character_0015Rect.X + 17;
+                }
+
+            }
+
+            for (int i = 0; i < alien3Positioner.Count; i++)
+            {
+                Rectangle tempalien3Positioner = alien3Positioner[i];
+
+                if (laserHitbox.Intersects(tempalien3Positioner))
+                {
+                    alien3Positioner.Remove(tempalien3Positioner);
+
+                    laserHitbox.Y = character_0015Rect.Y;
+                    laserHitbox.X = character_0015Rect.X + 17;
+                }
+
+            }
+
+            /*
+            if ((shipGreen_mannedPositioner = 0) && (alien2Positioner = 0) && (alien3Positioner = 0))
+            {
+                break;
+            }
+            */
+
+        }
+        void alienFlytta()
+        {
+            Rectangle tempRect;
+            Vector2 tempVect;
+
+            for (int i = 0; i < shipGreen_mannedPositioner.Count; i++)
+            {
+                tempRect = shipGreen_mannedPositioner[i];
+                tempRect.X += (int)shipGreen_mannedSpeed[i].X;
+                tempRect.Y += (int)shipGreen_mannedSpeed[i].Y;
+
+                if (tempRect.X < 0 || tempRect.X > 800 - tempRect.Width)
+                {
+
+                }
             }
         }
         

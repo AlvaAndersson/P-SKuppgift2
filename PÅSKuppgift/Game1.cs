@@ -13,6 +13,8 @@ namespace PÅSKuppgift
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        int scen = 0;
+
         //Alien
         Texture2D shipGreen_mannedBild;
         List<Rectangle> shipGreen_mannedPositioner = new List<Rectangle>();
@@ -42,6 +44,11 @@ namespace PÅSKuppgift
         //Vector2 laserHastighet;
         //Vector2 laserPosition = new Vector2(); 
 
+        // Mus
+        MouseState mus = Mouse.GetState();
+        MouseState gammalMus = Mouse.GetState();
+
+        //Meny
         Texture2D buttonBild;
         Rectangle buttonRect;
 
@@ -135,31 +142,86 @@ namespace PÅSKuppgift
 
             base.Update(gameTime);
 
-            alienBort();
+            gammalMus = mus;
+            mus = Mouse.GetState();
+
+            //alienBort();
 
             
-
-
-
-            if (laserHitbox.Y != 0)
+            switch (scen)
             {
-                laserHitbox.Y -= 6; 
+                case 0:
+                    UppdateraMeny();
+                    break;
+
+                case 1:
+                    SpelSpel();
+                        break;
             }
-            if (laserHitbox.Y == 0)
-            {
-                laserHitbox.Y = character_0015Rect.Y;
-                laserHitbox.X = character_0015Rect.X + 17;
-            }
+
+
 
             
             
 
             tangentBord = Keyboard.GetState();
 
-            FlyttaSkepp();
+            //FlyttaSkepp();
         }
 
         protected override void Draw(GameTime gameTime)
+        {
+            
+            switch (scen)
+            {
+                case 0:
+                    startMeny();
+                    break;
+                case 1:
+                    ritaSpel();
+                    break;
+            }
+
+            base.Draw(gameTime);
+        }
+
+        void FlyttaSkepp()
+        {
+            //skepp
+            if (tangentBord.IsKeyDown(Keys.Right) == true)
+            {
+                character_0015Rect.X += 4;
+                
+            }
+            if (tangentBord.IsKeyDown(Keys.Left) == true)
+            {
+                character_0015Rect.X -= 4;
+                
+            }
+
+            //Laser
+            if (laserHitbox.Y != 0)
+            {
+                laserHitbox.Y -= 6;
+            }
+            if (laserHitbox.Y == 0)
+            {
+                laserHitbox.Y = character_0015Rect.Y;
+                laserHitbox.X = character_0015Rect.X + 17;
+            }
+        }
+
+        void startMeny()
+        {
+            GraphicsDevice.Clear(Color.AliceBlue);
+
+            spriteBatch.Begin();
+           // spriteBatch.DrawString(arial, start, startPosition, Color.White);
+            spriteBatch.Draw(buttonBild, buttonRect, Color.White);
+            spriteBatch.End();
+        }
+
+        void ritaSpel()
         {
             GraphicsDevice.Clear(Color.Black);
 
@@ -167,7 +229,7 @@ namespace PÅSKuppgift
             foreach (Rectangle shipGreen_mannnedPosition in shipGreen_mannedPositioner)
             {
                 spriteBatch.Draw(shipGreen_mannedBild, shipGreen_mannnedPosition, Color.White);
-                
+
             }
 
             foreach (Rectangle alien2Position in alien2Positioner)
@@ -186,44 +248,51 @@ namespace PÅSKuppgift
 
             spriteBatch.Draw(character_0015Bild, character_0015Rect, Color.White);
 
-            
-            
-            spriteBatch.End();
 
 
-            base.Draw(gameTime);
-        }
-
-        void FlyttaSkepp()
-        {
-            if (tangentBord.IsKeyDown(Keys.Right) == true)
-            {
-                character_0015Rect.X += 4;
-                
-            }
-            if (tangentBord.IsKeyDown(Keys.Left) == true)
-            {
-                character_0015Rect.X -= 4;
-                
-            }
-        }
-
-        void startMeny()
-        {
-            GraphicsDevice.Clear(Color.AliceBlue);
-
-            spriteBatch.Begin();
-            spriteBatch.DrawString(arial, start, startPosition, Color.White);
-            spriteBatch.Draw(buttonBild, buttonRect, Color.White);
             spriteBatch.End();
         }
 
+        
         void UppdateraMeny()
         {
             // if(Vänster musknapp precistryckt && muspekare över buttonbilden)
             // Byt scen till spelscen
+            if (VänsterMusTryckt() == true && buttonRect.Contains(mus.Position) == true)
+            {
+                BytScen(1);
+            }
+        }
+        void SpelSpel()
+        {
+
+            alienBort();
+            FlyttaSkepp();
+            alienFlytta();
+
+            if (shipGreen_mannedPositioner.Count == 0)
+            {
+                BytScen(0);
+            }
+            
         }
 
+        bool VänsterMusTryckt()
+        {
+            if (mus.LeftButton == ButtonState.Pressed && gammalMus.LeftButton == ButtonState.Released)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        void BytScen(int nyscen)
+        {
+            scen = nyscen;
+        }
         
         void alienBort()
         {
@@ -288,9 +357,9 @@ namespace PÅSKuppgift
                 tempRect.X += (int)shipGreen_mannedSpeed[i].X;
                 tempRect.Y += (int)shipGreen_mannedSpeed[i].Y;
 
-                if (tempRect.X < 0 || tempRect.X > 800 - tempRect.Width)
+                if (tempRect.Y < 0 || tempRect.Y > 480 - tempRect.Width)
                 {
-
+                    
                 }
             }
         }

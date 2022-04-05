@@ -14,6 +14,7 @@ namespace PÅSKuppgift
         SpriteBatch spriteBatch;
 
         int scen = 0;
+        SpriteFont arialFont;
 
         //Alien
         Texture2D shipGreen_mannedBild;
@@ -53,9 +54,20 @@ namespace PÅSKuppgift
         Rectangle buttonRect;
 
         //Start text
-        string start = "Space invaders";
+        string startText = "Space invaders";
         Vector2 startPosition;
-        SpriteFont arial;
+
+        //Avslut Text
+        string avslutText = "Garttis du vann!";
+        Vector2 avslutPosition;
+
+        //Game over
+
+        string overText = "GAME OVER";
+        Vector2 overPosition;
+
+        int Tid = 60;
+        
 
         public Game1()
         {
@@ -127,8 +139,14 @@ namespace PÅSKuppgift
             buttonRect = new Rectangle(400 - buttonBild.Width / 2, 360, buttonBild.Width, buttonBild.Height);
 
             //StartText
-           // startPosition = new Vector2(400 - arial.MeasureString(start).X / 2, 100);
-            
+            arialFont = Content.Load<SpriteFont>("arial");
+            startPosition = new Vector2(400 - arialFont.MeasureString(startText).X / 2, 100);
+
+            //Avslut text
+            avslutPosition = new Vector2(400 - arialFont.MeasureString(avslutText).X / 2, 100);
+
+            //Game over text
+            overPosition = new Vector2(400 - arialFont.MeasureString(overText).X / 2, 100);
 
             // TODO: use this.Content to load your game content here
         }
@@ -175,10 +193,16 @@ namespace PÅSKuppgift
             switch (scen)
             {
                 case 0:
-                    startMeny();
+                    ritaMeny();
                     break;
                 case 1:
                     ritaSpel();
+                    break;
+                case 2:
+                    vinnaSpel();
+                    break;
+                case 3:
+                    GameOver();
                     break;
             }
 
@@ -211,12 +235,12 @@ namespace PÅSKuppgift
             }
         }
 
-        void startMeny()
+        void ritaMeny()
         {
-            GraphicsDevice.Clear(Color.AliceBlue);
+            GraphicsDevice.Clear(Color.DarkBlue);
 
             spriteBatch.Begin();
-           // spriteBatch.DrawString(arial, start, startPosition, Color.White);
+            spriteBatch.DrawString(arialFont, startText, startPosition, Color.LimeGreen);
             spriteBatch.Draw(buttonBild, buttonRect, Color.White);
             spriteBatch.End();
         }
@@ -272,7 +296,8 @@ namespace PÅSKuppgift
 
             if (shipGreen_mannedPositioner.Count == 0)
             {
-                BytScen(0);
+                BytScen(2);
+                
             }
             
         }
@@ -338,30 +363,57 @@ namespace PÅSKuppgift
 
             }
 
-            /*
-            if ((shipGreen_mannedPositioner = 0) && (alien2Positioner = 0) && (alien3Positioner = 0))
-            {
-                break;
-            }
-            */
+         
 
         }
         void alienFlytta()
         {
-            Rectangle tempRect;
-            Vector2 tempVect;
-
-            for (int i = 0; i < shipGreen_mannedPositioner.Count; i++)
+            Tid--;
+            if (Tid <= 0)
             {
-                tempRect = shipGreen_mannedPositioner[i];
-                tempRect.X += (int)shipGreen_mannedSpeed[i].X;
-                tempRect.Y += (int)shipGreen_mannedSpeed[i].Y;
 
-                if (tempRect.Y < 0 || tempRect.Y > 480 - tempRect.Width)
+
+                Rectangle tempRect;
+
+
+                for (int i = 0; i < alien3Positioner.Count; i++)
                 {
-                    
+                    tempRect = alien3Positioner[i];
+
+
+
+                    if (tempRect.Y > 0)
+                    {
+                        tempRect.Y += 15;
+                        alien3Positioner[i] = tempRect;
+                    }
+
+
+                   if(tempRect.Y == 430)
+                    {
+                        BytScen(3);
+                    }
                 }
+
+                Tid = 60;
             }
+
+        }
+
+        void vinnaSpel()
+        {
+            GraphicsDevice.Clear(Color.DarkBlue);
+            spriteBatch.Begin();
+            spriteBatch.DrawString(arialFont, avslutText, avslutPosition, Color.LimeGreen);
+            spriteBatch.End();
+        }
+
+        void GameOver()
+        {
+            GraphicsDevice.Clear(Color.DarkBlue);
+            spriteBatch.Begin();
+            spriteBatch.DrawString(arialFont, overText, overPosition, Color.LimeGreen);
+            spriteBatch.End();
         }
         
     }

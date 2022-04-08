@@ -58,7 +58,7 @@ namespace PÅSKuppgift
         Vector2 startPosition;
 
         //Avslut Text
-        string avslutText = "Garttis du vann!";
+        string avslutText = "Grattis du vann!";
         Vector2 avslutPosition;
 
         //Game over
@@ -143,10 +143,10 @@ namespace PÅSKuppgift
             startPosition = new Vector2(400 - arialFont.MeasureString(startText).X / 2, 100);
 
             //Avslut text
-            avslutPosition = new Vector2(400 - arialFont.MeasureString(avslutText).X / 2, 100);
+            avslutPosition = new Vector2(400 - arialFont.MeasureString(avslutText).X / 2, 200);
 
             //Game over text
-            overPosition = new Vector2(400 - arialFont.MeasureString(overText).X / 2, 100);
+            overPosition = new Vector2(400 - arialFont.MeasureString(overText).X / 2, 200);
 
             // TODO: use this.Content to load your game content here
         }
@@ -397,6 +397,9 @@ namespace PÅSKuppgift
 
                 Tid = 60;
             }
+
+            
+
 
         }
 

@@ -9,7 +9,6 @@ namespace PÅSKuppgift
     public class Game1 : Game
     {
        
-
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
@@ -25,13 +24,11 @@ namespace PÅSKuppgift
         //Alien2
         Texture2D alien2Bild;
         List<Rectangle> alien2Positioner = new List<Rectangle>();
-        //float shipGreen_mannedSpeed = 3;
         Rectangle alien2Rect;
 
         //Alien3
         Texture2D alien3Bild;
         List<Rectangle> alien3Positioner = new List<Rectangle>();
-        //float shipGreen_mannedSpeed = 3;
         Rectangle alien3Rect;
 
         //Rymdskepp
@@ -42,8 +39,6 @@ namespace PÅSKuppgift
         //Laser
         Texture2D laserBild;
         Rectangle laserHitbox;
-        //Vector2 laserHastighet;
-        //Vector2 laserPosition = new Vector2(); 
 
         // Mus
         MouseState mus = Mouse.GetState();
@@ -62,17 +57,17 @@ namespace PÅSKuppgift
         Vector2 avslutPosition;
 
         //Game over
-
         string overText = "GAME OVER";
         Vector2 overPosition;
-
+       
         int Tid = 60;
+       
+        //hastigheter
+        Dictionary<string, int> speeds = new Dictionary<string, int>();
         
 
         public Game1()
         {
-            
-
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -107,6 +102,9 @@ namespace PÅSKuppgift
                 }
             }
 
+            speeds["skeppSpeed"] = 4;
+            speeds["alienSpeed"] = 15;
+
             base.Initialize();
         }
 
@@ -132,7 +130,6 @@ namespace PÅSKuppgift
             //Laser
             laserBild = Content.Load<Texture2D>("spaceMissiles_038");
             laserHitbox = new Rectangle(character_0015Rect.X + 17, character_0015Rect.Y, laserBild.Width, laserBild.Height);
-            //laserPosition = new Vector2(character_0015Rect.X + 17, character_0015Rect.Y);
 
             //Startknapp
             buttonBild = Content.Load<Texture2D>("button");
@@ -163,7 +160,7 @@ namespace PÅSKuppgift
             gammalMus = mus;
             mus = Mouse.GetState();
 
-            //alienBort();
+           
 
             
             switch (scen)
@@ -176,15 +173,11 @@ namespace PÅSKuppgift
                     SpelSpel();
                         break;
             }
-
-
-
-            
             
 
             tangentBord = Keyboard.GetState();
 
-            //FlyttaSkepp();
+            
         }
 
         protected override void Draw(GameTime gameTime)
@@ -214,12 +207,12 @@ namespace PÅSKuppgift
             //skepp
             if (tangentBord.IsKeyDown(Keys.Right) == true)
             {
-                character_0015Rect.X += 4;
+                character_0015Rect.X += speeds["skeppSpeed"];
                 
             }
             if (tangentBord.IsKeyDown(Keys.Left) == true)
             {
-                character_0015Rect.X -= 4;
+                character_0015Rect.X -= speeds["skeppSpeed"];
                 
             }
 
@@ -272,20 +265,19 @@ namespace PÅSKuppgift
 
             spriteBatch.Draw(character_0015Bild, character_0015Rect, Color.White);
 
-
-
             spriteBatch.End();
         }
 
         
         void UppdateraMeny()
         {
-            // if(Vänster musknapp precistryckt && muspekare över buttonbilden)
+            
             // Byt scen till spelscen
             if (VänsterMusTryckt() == true && buttonRect.Contains(mus.Position) == true)
             {
                 BytScen(1);
             }
+
         }
         void SpelSpel()
         {
@@ -294,12 +286,10 @@ namespace PÅSKuppgift
             FlyttaSkepp();
             alienFlytta();
 
-            if (shipGreen_mannedPositioner.Count == 0)
+            if (shipGreen_mannedPositioner.Count == 0 && alien2Positioner.Count == 0 && alien3Positioner.Count == 0)
             {
-                BytScen(2);
-                
-            }
-            
+                BytScen(2);  
+            }  
         }
 
         bool VänsterMusTryckt()
@@ -312,6 +302,8 @@ namespace PÅSKuppgift
             {
                 return false;
             }
+
+
         }
 
         void BytScen(int nyscen)
@@ -363,8 +355,6 @@ namespace PÅSKuppgift
 
             }
 
-         
-
         }
         void alienFlytta()
         {
@@ -380,8 +370,6 @@ namespace PÅSKuppgift
                 {
                     tempRect = alien3Positioner[i];
 
-
-
                     if (tempRect.Y > 0)
                     {
                         tempRect.Y += 15;
@@ -389,16 +377,39 @@ namespace PÅSKuppgift
                     }
 
 
-                   if(tempRect.Y == 430)
+                    if(tempRect.Y == 430)
                     {
                         BytScen(3);
                     }
                 }
 
+                for (int i = 0; i < alien2Positioner.Count; i++)
+                {
+                    Rectangle temp = alien2Positioner[i];
+                    if (temp.X < 800 - temp.Width || temp.X > 0)
+                    {
+                        temp.X += speeds["alienSpeed"];
+                        alien2Positioner[i] = temp;
+                    }
+
+                    
+                }
+
+                if (alien2Positioner.Count >= 1)
+                {
+
+                    Rectangle first = alien2Positioner[0];
+                    Rectangle last = alien2Positioner[alien2Positioner.Count - 1];
+
+                    if (last.X >= 800 - last.Width || first.X <= 0)
+                    {
+                        speeds["alienSpeed"] *= -1;
+                    }
+                }
+
+
                 Tid = 60;
             }
-
-            
 
 
         }
